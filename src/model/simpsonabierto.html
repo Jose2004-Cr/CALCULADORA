@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Integral Definida - Método de Simpson Abierto</title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f3f3f3;
+    }
+    .container {
+        width: 600px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        min-height: 200px;
+        overflow: hidden;
+    }
+    input[type="text"],
+    input[type="number"],
+    button {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+    button {
+        background-color: #007bff; /* Azul */
+        color: white;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3; /* Azul más oscuro */
+    }
+    .resultado {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        overflow-y: auto;
+        max-height: 300px;
+    }
+    .resultado h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    .paso {
+        margin-bottom: 10px;
+    }
+    #grafica-container {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    #grafica {
+        width: 100%;
+    }
+    #resetButton,
+    #goToMenuButton {
+        width: calc(100% - 22px);
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+    #resetButton {
+        background-color: #f44336; /* Rojo */
+        color: white;
+    }
+    #resetButton:hover {
+        background-color: #d32f2f; /* Rojo más oscuro */
+    }
+    #goToMenuButton {
+        background-color: #007bff; /* Azul */
+        color: white;
+    }
+    #goToMenuButton:hover {
+        background-color: #0056b3; /* Azul más oscuro */
+    }
+    #calcularButton {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+        color: white; /* Letras blancas */
+        background-color: #007bff; /* Azul */
+    }
+    #calcularButton:hover {
+        background-color: #0056b3; /* Azul más oscuro */
+    }
+    h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    label {
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Calculadora de Integral Definida - Método de Simpson Abierto</h2>
+    <div class="form-group">
+        <label for="funcion">Función f(x):</label>
+        <input type="text" id="funcion" placeholder="Ej: x^3">
+    </div>
+    <div class="form-group">
+        <label for="limite_a">Límite Inferior (a):</label>
+        <input type="number" id="limite_a" placeholder="Ej: 0">
+    </div>
+    <div class="form-group">
+        <label for="limite_b">Límite Superior (b):</label>
+        <input type="number" id="limite_b" placeholder="Ej: 1">
+    </div>
+    <div class="form-group">
+        <label for="num_subintervalos">Número de Subintervalos (n):</label>
+        <input type="number" id="num_subintervalos" placeholder="Ej: 4">
+    </div>
+    <button id="calcularButton" type="button" onclick="calcularIntegral()">Calcular Integral</button>
+    <div id="resultado" class="resultado" style="display: none;"></div>
+    <div id="grafica-container" style="display: none;">
+        <div id="grafica"></div>
+    </div>
+    <div style="text-align: center; margin-bottom: 10px;" id="buttonsContainer">
+        <button id="goToMenuButton" onclick="location.href='Menu.html';" style="display: none;">Ir al Menú</button>
+        <button id="resetButton" onclick="resetearCalculadora()" style="display: none;">Refrescar</button>
+    </div>
+</div>
+
+<script>
+    function f(x) {
+        return x ** 3; // Definición de la función f(x) - Puedes cambiarla según tus necesidades
+    }
+
+    function calcularIntegral() {
+        let funcion = document.getElementById("funcion").value;
+        let limite_a = parseFloat(document.getElementById("limite_a").value);
+        let limite_b = parseFloat(document.getElementById("limite_b").value);
+        let n = parseInt(document.getElementById("num_subintervalos").value);
+
+        let h = (limite_b - limite_a) / n;
+
+        let sumatoria = 0;
+        let pasos = "<h3>Paso a Paso del Cálculo</h3>";
+        pasos += "<div class='paso'><strong>Paso 1:</strong> Tamaño del Paso (h) = (b - a) / n = (" + limite_b + " - " + limite_a + ") / " + n + " = " + h.toFixed(4) + "</div>";
+
+        for (let i = 1; i < n; i++) {
+            let xi = limite_a + i * h;
+            sumatoria += f(xi);
+            pasos += "<div class='paso'><strong>Paso " + (i + 1) + ":</strong> Evaluar f(" + xi.toFixed(4) + ") = " + f(xi).toFixed(4) + "</div>";
+        }
+
+        let integral = (h / 3) * (f(limite_a) + 4 * sumatoria + 2 * (f(limite_a + h) + f(limite_b - h)) + f(limite_b));
+
+        pasos += "<div class='paso'><strong>Paso " + (n + 1) + ":</strong> Aplicar la Fórmula de Simpson Abierto: I ≈ (h / 3) * [f(a) + 4 * (f(a + h) + f(a + 2h) + ... + f(b - h)) + 2 * (f(a + h) + f(b - h)) + f(b)]</div>";
+        pasos += "<div class='paso'><strong>Resultado:</strong> Integral ≈ " + integral.toFixed(4) + "</div>";
+
+        let resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = "<h3>Resultado de la Integral Definida</h3>" +
+            pasos;
+
+        resultadoDiv.style.display = "block";
+
+        let x_values = [];
+        let y_values = [];
+        for (let i = 0; i <= n; i++) {
+            let xi = limite_a + i * h;
+            x_values.push(xi);
+            y_values.push(f(xi));
+        }
+
+        Plotly.newPlot('grafica', [{
+            x: x_values,
+            y: y_values,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'f(x)'
+        }], {
+            margin: { t: 0 },
+            xaxis: { title: 'x' },
+            yaxis: { title: 'f(x)' }
+        });
+
+        document.getElementById("grafica-container").style.display = "block";
+        document.getElementById("resetButton").style.display = "block";
+        document.getElementById("goToMenuButton").style.display = "block";
+    }
+
+    function resetearCalculadora() {
+        document.getElementById("resultado").style.display = "none";
+        document.getElementById("grafica-container").style.display = "none";
+        document.getElementById("resetButton").style.display = "none";
+        document.getElementById("funcion").value = "";
+        document.getElementById("limite_a").value = "";
+        document.getElementById("limite_b").value = "";
+        document.getElementById("num_subintervalos").value = "";
+        document.getElementById("goToMenuButton").style.display = "none";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Navegable con Calculadoras</title>
+    <!-- Enlace a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilos adicionales */
+        .calculadora {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        #resultado {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Estilos para los botones del menú */
+        .nav-link {
+            color: #007bff;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 15px 30px;
+            margin: 10px;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s, border-radius 0.3s;
+            display: inline-block;
+            text-decoration: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Sombras predeterminadas */
+            border-radius: 5px; /* Redondeo predeterminado */
+            border-color: transparent; /* Color de borde inicial */
+        }
+
+        .nav-link:hover {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #000000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Aumenta la sombra al pasar el mouse */
+            border-radius: 25px; /* Redondeo al pasar el mouse */
+        }
+
+        .nav-link:hover,
+        .nav-link:focus {
+            border-color: #ccc; /* Cambia el color de borde al pasar el mouse o al enfocar */
+        }
+
+        .nav-link:active {
+            background-color: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+
+        /* Estilos adicionales para resaltar los botones cuando se ejecuta el formulario */
+        .nav-link:focus {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Aumenta la sombra cuando se enfoca el botón */
+            transform: scale(1.05); /* Aumenta ligeramente el tamaño del botón */
+        }
+
+        /* Estilos para el encabezado */
+        header {
+            background: linear-gradient(to right, #343a40, #007bff);
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Menú Navegable con Calculadoras</h1>
+    </header>
+    <div class="container">
+        <nav class="mb-4">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a href="Trapezoidal.html" class="nav-link active" id="menu-trapezoidal">Trapezoidal</a>
+                </li>
+                <li class="nav-item">
+                    <a href="jorgeboole.html" class="nav-link" id="menu-boole">Boole</a>
+                </li>
+                <li class="nav-item">
+                    <a href="sipson3_8.html" class="nav-link" id="menu-simpson38">Simpson 3/8</a>
+                </li>
+                <li class="nav-item">
+                    <a href="simpson1_3.html" class="nav-link" id="menu-simpson13">Simpson 1/3</a>
+                </li>
+                <li class="nav-item">
+                    <a href="simpsonabierto.html" class="nav-link" id="menu-simpson-abierta">Simpson Abierta</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Calculadoras -->
+        <div id="calculadora-trapezoidal" class="calculadora">
+            <h2>Calculadora de Integrales por Regla del Trapezoidal</h2>
+            <form>
+                <!-- Campos y botones para la calculadora Trapezoidal -->
+            </form>
+            <div id="resultado-trapezoidal"></div>
+        </div>
+
+        <div id="calculadora-boole" class="calculadora">
+            <h2>Calculadora de Integrales por Método de Jorge Boole</h2>
+            <form>
+                <!-- Campos y botones para la calculadora Boole -->
+            </form>
+            <div id="resultado-boole"></div>
+        </div>
+
+        <div id="calculadora-sipson3_8" class="calculadora">
+            <h2>Calculadora de Integral Definida - Método de Simpson 3/8</h2>
+            <form>
+                <!-- Campos y botones para la calculadora Simpson 3/8 -->
+            </form>
+            <div id="resultado-simpson38"></div>
+        </div>
+
+        <div id="calculadora-simpson13" class="calculadora">
+            <h2>Calculadora de Integral Definida - Método de Simpson 1/3</h2>
+            <form>
+                <!-- Campos y botones para la calculadora Simpson 1/3 -->
+            </form>
+            <div id="resultado-simpson13"></div>
+        </div>
+
+        <div id="calculadora-simpson-abierta" class="calculadora">
+            <h2>Calculadora de Integral Definida - Método de Simpson Abierta</h2>
+            <form>
+                <!-- Campos y botones para la calculadora Simpson Abierta -->
+            </form>
+            <div id="resultado-simpson-abierta"></div>
+        </div>
+    </div>
+
+    <!-- Enlace a Bootstrap JS y jQuery (necesarios para los componentes de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Función para mostrar la calculadora correspondiente
+        function mostrarCalculadora(id) {
+            $(".calculadora").hide();
+            $("#resultado").empty();
+            $("#" + id).show();
+        }
+
+        // Evento de clic para el botón "Simpson 3/8"
+        $("#menu-simpson38").click(function() {
+            mostrarCalculadora("calculadora-sipson3_8");
+        });
+    </script>
+</body>
+</html>

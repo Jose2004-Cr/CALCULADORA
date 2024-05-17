@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales por Método de Simpson 3/8</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Estilos adicionales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f3f3;
+        }
+        .container {
+            width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex; /* Para alinear elementos verticalmente */
+            flex-direction: column; /* Para alinear elementos verticalmente */
+        }
+        input[type="text"],
+        input[type="number"],
+        button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: left; /* Justificar a la izquierda */
+        }
+        button {
+            background-color: #007bff; /* Azul */
+            color: white;
+            cursor: pointer;
+            display: block; /* Cambiamos a bloque */
+            margin-left: auto; /* Para alinear a la derecha */
+            margin-right: auto; /* Para alinear a la derecha */
+            text-align: center; /* Centrar texto */
+            width: 100%; /* Ancho al 100% */
+        }
+        button:hover {
+            background-color: #0056b3; /* Tonos más oscuros de azul */
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            flex-grow: 1; /* Para ocupar el espacio restante */
+            overflow-y: auto; /* Para agregar scroll si es necesario */
+        }
+        .resultado h3 {
+            margin-top: 0;
+        }
+        .resultado p {
+            margin: 5px 0;
+        }
+        .resultado table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .resultado th, .resultado td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        /* Estilos para el botón de ir al menú */
+        a#goToMenuButton {
+            display: none; /* Por defecto oculto */
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center; /* Centrar el texto */
+            cursor: pointer;
+            color: #fff; /* Blanco */
+            background-color: #007bff; /* Azul */
+            text-decoration: none; /* Quitar subrayado */
+            margin-left: auto; /* Para centrar horizontalmente */
+            margin-right: auto; /* Para centrar horizontalmente */
+            margin-bottom: 5px; /* Agregamos separación */
+        }
+        a#goToMenuButton:hover {
+            background-color: #0056b3; /* Tonos más oscuros de azul */
+        }
+        /* Estilos para el botón de refrescar */
+        button#resetButton {
+            display: none; /* Por defecto oculto */
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center; /* Centrar el texto */
+            cursor: pointer;
+            color: #fff; /* Blanco */
+            background-color: #dc3545; /* Rojo */
+            margin-left: auto; /* Para centrar horizontalmente */
+            margin-right: auto; /* Para centrar horizontalmente */
+            margin-top: 5px; /* Agregamos separación */
+        }
+        button#resetButton:hover {
+            background-color: #c82333; /* Tonos más oscuros de rojo */
+        }
+        /* Estilos para el gráfico */
+        #grafico {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            width: calc(100% - 22px); /* Ancho del 100% menos el margen */
+            overflow-x: auto; /* Agregamos scroll horizontal si es necesario */
+        }
+        /* Estilos para el scroll */
+        #scrollContainer {
+            margin-top: 20px;
+            width: 100%;
+            overflow-y: auto; /* Agregamos scroll vertical */
+            max-height: 200px; /* Altura máxima del scroll */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="text-align: center;">Calculadora de Integrales por Método de Simpson 3/8</h2>
+    <form id="integralesForm">
+        <label for="funcion">Función f(x):</label>
+        <input type="text" id="funcion" placeholder="Ej: x^2 + 3x + 5">
+        <label for="limite_a">Límite Inferior (a):</label>
+        <input type="number" id="limite_a" placeholder="Ej: 0">
+        <label for="limite_b">Límite Superior (b):</label>
+        <input type="number" id="limite_b" placeholder="Ej: 5">
+        <button type="button" onclick="calcularIntegral()">Calcular Integral</button>
+    </form>
+    <div id="resultado" class="resultado" style="display: none;"></div>
+    <div id="grafico" style="display: none;"></div>
+    <div id="scrollContainer">
+        <a id="goToMenuButton" href="Menu.html">Ir al Menú</a>
+        <button id="resetButton" onclick="resetearCalculadora()" style="display: none;">Refrescar</button>
+    </div>
+</div>
+
+<script>
+    function f(x) {
+        // Definición de la función f(x)
+        // Puedes reemplazar esta función por la que necesites calcular
+        return x ** 2; // Por ejemplo, x^2
+    }
+
+    function h(a, b) {
+        // Definición de la función h(x) para calcular el tamaño del intervalo
+        return (b - a) / 4;
+    }
+
+    function jorgeBoole(a, b) {
+        // Función para implementar el método de Jorge Boole y calcular la integral
+        let h_value = h(a, b);
+        let sum = 7 * f(a) + 32 * f(3 * a + b / 4) + 12 * f((a + b) / 2) + 32 * f(a + 3 * b / 4) + 7 * f(b);
+        return (2 * h_value / 45) * sum;
+    }
+
+    function calcularIntegral() {
+        // Programa principal
+        let funcion = document.getElementById("funcion").value;
+        let limite_a = parseFloat(document.getElementById("limite_a").value);
+        let limite_b = parseFloat(document.getElementById("limite_b").value);
+        let resultado = jorgeBoole(limite_a, limite_b);
+        let h_value = h(limite_a, limite_b);
+        let tabla = "<table><tr><th>Punto de Evaluación</th><th>Valor de f(x)</th></tr>";
+        for (let i = 0; i <= 4; i++) {
+            let punto = limite_a + i * h_value;
+            let valor = f(punto);
+            tabla += "<tr><td>" + punto.toFixed(2) + "</td><td>" + valor.toFixed(2) + "</td></tr>";
+        }
+        tabla += "</table>";
+
+        let resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = "<h3>Resultados:</h3>" +
+            "<p><strong>Función:</strong> " + funcion + "</p>" +
+            "<p><strong>Límite Inferior (a):</strong> " + limite_a + "</p>" +
+            "<p><strong>Límite Superior (b):</strong> " + limite_b + "</p>" +
+            "<p><strong>Tamaño del Intervalo (h):</strong> " + h_value.toFixed(2) + "</p>" +
+            "<p><strong>Valor de la Integral:</strong> " + resultado.toFixed(2) + "</p>" +
+            "<h3>Valores de f(x) evaluados:</h3>" + tabla;
+        resultadoDiv.style.display = "block";
+        document.getElementById("resetButton").style.display = "block";
+        document.getElementById("goToMenuButton").style.display = "block";
+
+        // Generar el gráfico
+        let x_values = [];
+        let y_values = [];
+        for (let i = 0; i <= 4; i++) {
+            let punto = limite_a + i * h_value;
+            let valor = f(punto);
+            x_values.push(punto);
+            y_values.push(valor);
+        }
+        Plotly.newPlot('grafico', [{
+            x: x_values,
+            y: y_values,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'f(x)'
+        }], {
+            margin: { t: 0 },
+            xaxis: { title: 'x' },
+            yaxis: { title: 'f(x)' }
+        });
+        document.getElementById("grafico").style.display = "block";
+    }
+
+    function resetearCalculadora() {
+        document.getElementById("resultado").style.display = "none";
+        document.getElementById("funcion").value = "";
+        document.getElementById("limite_a").value = "";
+        document.getElementById("limite_b").value = "";
+        document.getElementById("resetButton").style.display = "none";
+        document.getElementById("goToMenuButton").style.display = "none";
+        document.getElementById("grafico").style.display = "none";
+    }
+</script>
+</body>
+</html>

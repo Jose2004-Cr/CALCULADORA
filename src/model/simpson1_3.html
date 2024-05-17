@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integral Definida - Método de Simpson 1/3</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Estilos adicionales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f3f3;
+        }
+        .container {
+            width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-group {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="number"],
+        button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff; /* Azul */
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3; /* Tonos más oscuros de azul */
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            width: 100%;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+        .resultado h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .paso {
+            margin-bottom: 10px;
+        }
+        #grafica {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            width: 100%;
+        }
+        #resetButton {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f44336;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+        /* Estilos para el botón de ir al menú */
+        a#goToMenuButton {
+            display: none; /* Por defecto oculto */
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center; /* Centrar el texto */
+            cursor: pointer;
+            color: #fff; /* Blanco */
+            background-color: #007bff; /* Azul */
+            text-decoration: none; /* Quitar subrayado */
+            margin-top: 20px; /* Separación del botón */
+        }
+        a#goToMenuButton:hover {
+            background-color: #0056b3; /* Tonos más oscuros de azul */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Calculadora de Integral Definida - Método de Simpson 1/3</h2>
+    <div class="form-group">
+        <label for="funcion">Función f(x):</label>
+        <input type="text" id="funcion" placeholder="Ingrese la función (Ej: x^3)">
+    </div>
+    <div class="form-group">
+        <label for="limite_a">Límite Inferior (a):</label>
+        <input type="number" id="limite_a" placeholder="Ingrese el límite inferior">
+    </div>
+    <div class="form-group">
+        <label for="limite_b">Límite Superior (b):</label>
+        <input type="number" id="limite_b" placeholder="Ingrese el límite superior">
+    </div>
+    <button type="button" onclick="calcularIntegral()">Calcular Integral</button>
+    <div id="resultado" class="resultado" style="display: none;"></div>
+    <div id="grafica" style="display: none;"></div>
+    <a id="goToMenuButton" href="Menu.html">Ir al Menú</a>
+    <button id="resetButton" onclick="resetearCalculadora()" style="display: none;">Restablecer</button>
+</div>
+
+<script>
+    function f(x) {
+        // Definición de la función f(x)
+        // Puedes reemplazar esta función por la que necesites calcular
+        return x ** 3; // Por ejemplo, x^3
+    }
+
+    function h(a, b) {
+        return (b - a) / 2;
+    }
+
+    function calcularIntegral() {
+        // Programa principal
+        let funcion = document.getElementById("funcion").value;
+        let limite_a = parseFloat(document.getElementById("limite_a").value);
+        let limite_b = parseFloat(document.getElementById("limite_b").value);
+
+        let h_value = h(limite_a, limite_b);
+
+        let sumatoria = f(limite_a) + f(limite_b) + 4 * f(limite_a + h_value);
+
+        let pasos = "<h3>Paso a Paso del Cálculo</h3>";
+        pasos += "<div class='paso'><strong>Paso 1:</strong> Tamaño del Paso (h) = (b - a) / 2 = (" + limite_b + " - " + limite_a + ") / 2 = " + h_value.toFixed(4) + "</div>";
+
+        let integral = (h_value / 3) * sumatoria;
+
+        pasos += "<div class='paso'><strong>Paso 2:</strong> Aplicar la Fórmula de Simpson 1/3: I ≈ (h / 3) * [f(a) + 4f(a + h) + f(b)]</div>";
+        pasos += "<div class='paso'><strong>Resultado:</strong> Integral ≈ " + integral.toFixed(4) + "</div>";
+
+        let resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = "<h3>Resultado de la Integral Definida</h3>" +
+            pasos;
+
+        resultadoDiv.style.display = "block";
+
+        let x_values = [limite_a, limite_a + h_value, limite_b];
+        let y_values = [f(limite_a), f(limite_a + h_value), f(limite_b)];
+
+        Plotly.newPlot('grafica', [{
+            x: x_values,
+            y: y_values,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'f(x)'
+        }], {
+            margin: { t: 0 },
+            xaxis: { title: 'x' },
+            yaxis: { title: 'f(x)' }
+        });
+
+        document.getElementById("grafica").style.display = "block";
+        document.getElementById("resetButton").style.display = "block";
+        document.getElementById("goToMenuButton").style.display = "block";
+    }
+
+    function resetearCalculadora() {
+        document.getElementById("resultado").style.display = "none";
+        document.getElementById("grafica").style.display = "none";
+        document.getElementById("resetButton").style.display = "none";
+        document.getElementById("funcion").value = "";
+        document.getElementById("limite_a").value = "";
+        document.getElementById("limite_b").value = "";
+        document.getElementById("goToMenuButton").style.display = "none";
+    }
+</script>
+</body>
+</html>

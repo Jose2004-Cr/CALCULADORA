@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales por Regla del Trapezoidal</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Estilos adicionales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f3f3;
+        }
+        .container {
+            width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: left; /* Justificar a la izquierda */
+        }
+        button,
+        a {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center; /* Centrar el texto */
+            cursor: pointer;
+            color: #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover,
+        a:hover {
+            background-color: #0056b3;
+        }
+        a#backToMenuButton {
+            text-decoration: none; /* Quitar la línea de subrayado */
+            background-color: #007bff;
+            color: white;
+            display: none; /* Ocultar inicialmente */
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Calculadora de Integrales por Regla del Trapecio</h2>
+    <form id="integralesForm">
+        <label for="funcion">Función f(x):</label>
+        <input type="text" id="funcion" placeholder="Ej: x^2 + 3x + 5">
+        <label for="limite_a">Límite Inferior (a):</label>
+        <input type="number" id="limite_a" placeholder="Ej: 0">
+        <label for="limite_b">Límite Superior (b):</label>
+        <input type="number" id="limite_b" placeholder="Ej: 5">
+        <label for="num_subintervalos">Número de Subintervalos (n):</label>
+        <input type="number" id="num_subintervalos" placeholder="Ej: 100">
+        <button type="button" onclick="calcularIntegral()">Calcular Integral</button>
+    </form>
+    <div id="resultadoContainer">
+        <div id="resultado" class="resultado" style="display: none;"></div>
+    </div>
+    <div id="grafica" style="display: none;"></div>
+    <button id="resetButton" onclick="resetearCalculadora()" style="display: none;">Restablecer</button>
+    <a href="Menu.html" id="backToMenuButton" onclick="cerrarCalculadora()">Ir Menú</a>
+</div>
+<script>
+    function f(x) {
+        return x ** 2;
+    }
+    function h(a, b, n) {
+        return (b - a) / n;
+    }
+    function trapz(a, b, n) {
+        let h_value = h(a, b, n);
+        let sum = 0;
+        let steps = [];
+        for (let i = 1; i < n; i++) {
+            let x = a + i * h_value;
+            let y = f(x);
+            sum += y;
+            steps.push({ x: x, y: y });
+        }
+        let integral = (h_value / 2) * (f(a) + 2 * sum + f(b));
+        return { integral: integral, steps: steps };
+    }
+    function calcularIntegral() {
+        let funcion = document.getElementById("funcion").value;
+        let limite_a = parseFloat(document.getElementById("limite_a").value);
+        let limite_b = parseFloat(document.getElementById("limite_b").value);
+        let n = parseInt(document.getElementById("num_subintervalos").value);
+        let resultado = trapz(limite_a, limite_b, n);
+        let resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = "<h3>Resultados:</h3>" +
+            "<p><strong>Función:</strong> " + funcion + "</p>" +
+            "<p><strong>Límite Inferior (a):</strong> " + limite_a + "</p>" +
+            "<p><strong>Límite Superior (b):</strong> " + limite_b + "</p>" +
+            "<p><strong>Número de Subintervalos (n):</strong> " + n + "</p>" +
+            "<p><strong>Valor de la Integral:</strong> " + resultado.integral.toFixed(4) + "</p>" +
+            "<h3>Pasos Intermedios:</h3>" +
+            "<div class='paso'><strong>Paso 1:</strong> Calcular el tamaño del paso (h) = (b - a) / n = (" + limite_b + " - " + limite_a + ") / " + n + " = " + h(limite_a, limite_b, n).toFixed(4) + "</div>";
+        for (let i = 1; i < n; i++) {
+            let x = resultado.steps[i - 1].x;
+            let y = resultado.steps[i - 1].y;
+            resultadoDiv.innerHTML += "<div class='paso'><strong>Paso " + (i + 1) + ":</strong> Evaluar f(" + x.toFixed(4) + ") = " + y.toFixed(4) + "</div>";
+        }
+        resultadoDiv.innerHTML += "<div class='paso'><strong>Paso " + (n + 1) + ":</strong> Aplicar la Fórmula del Trapecio: I ≈ (h / 2) * [f(a) + 2 * (f(x1) + f(x2) + ... + f(xn-1)) + f(b)]</div>";
+        resultadoDiv.style.display = "block";
+        let x_values = resultado.steps.map(step => step.x);
+        let y_values = resultado.steps.map(step => step.y);
+        Plotly.newPlot('grafica', [{
+            x: x_values,
+            y: y_values,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'f(x)'
+        }], {
+            margin: { t: 0 },
+            xaxis: { title: 'x' },
+            yaxis: { title: 'f(x)' }
+        });
+        document.getElementById("grafica").style.display = "block";
+        document.getElementById("resetButton").style.display = "block";
+        document.getElementById("backToMenuButton").style.display = "inline"; // Mostrar el botón al calcular
+    }
+
+    function resetearCalculadora() {
+        document.getElementById("resultado").style.display = "none";
+        document.getElementById("grafica").style.display = "none";
+        document.getElementById("resetButton").style.display = "none";
+        document.getElementById("backToMenuButton").style.display = "none";
+        document.getElementById("funcion").value = "";
+        document.getElementById("limite_a").value = "";
+        document.getElementById("limite_b").value = "";
+        document.getElementById("num_subintervalos").value = "";
+    }
+
+    function cerrarCalculadora() {
+        window.close(); // Cerrar la ventana actual (calculadora)
+    }
+</script>
+</body>
+</html>
