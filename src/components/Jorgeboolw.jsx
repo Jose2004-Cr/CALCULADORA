@@ -123,11 +123,11 @@
       <div className="animate__animated animate__fadeIn">
         <h1 className="text-3xl font-bold text-center">Método de Jorge Boole</h1>
         <div className="grid grid-cols-3 p-6">
-          <div className="bg-white p-8 pt-5 w-full max-w-md">
+          <div className="w-full max-w-md p-8 pt-5 bg-white">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Ingresa la función:
+                <label className="block mb-2 text-sm font-medium text-gray-900">
+                  Ingresar Función:
                 </label>
                 <input
                   type="text"
@@ -135,13 +135,13 @@
              
                   onChange={(e) => setFuncStr(e.target.value) + handleInputChange()}
                   placeholder="Ejemplo: x**2"
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-200 rounded"
                 />
 
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
-                  className="mt-2 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition-all ease-in-out"
+                  className="w-full p-2 mt-2 text-white transition-all ease-in-out bg-blue-800 rounded hover:bg-blue-700"
                 >
                   Funciones Predefinidas
                 </button>
@@ -170,13 +170,13 @@
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#3c6e71] text-white p-2 rounded hover:bg-opacity-80 transition-all ease-in-out hover:scale-[103%]"
+                className="w-full bg-[#1d1c8e] text-white p-2 rounded hover:bg-opacity-80 transition-all ease-in-out hover:scale-[103%]"
               >
                 Calcular Integral
               </button>
             </form>
             {result !== null && (
-              <div className="grid grid-cols-2 gap-10 mt-4 p-4 bg-gray-100 border border-gray-300 rounded">
+              <div className="grid grid-cols-2 gap-10 p-4 mt-4 bg-gray-100 border border-gray-300 rounded">
                 <div className="flex flex-col">
                   <h2 className="text-lg font-semibold">Resultado:</h2>
                   <p>{result}</p>
@@ -207,7 +207,7 @@
           className="modal"
           overlayClassName="modal-overlay"
         >
-          <h2 className="text-lg font-semibold mb-4">Funciones Predefinidas</h2>
+          <h2 className="mb-4 text-lg font-semibold">Funciones Predefinidas</h2>
           <div className="grid grid-cols-1 gap-2">
             {Object.entries(predefinedFunctions).map(([key, value]) => (
               <button
@@ -216,7 +216,7 @@
                   setFuncStr(key);
                   setIsModalOpen(false);
                 }}
-                className="bg-gray-200 p-2 rounded hover:bg-gray-300 transition-all ease-in-out"
+                className="p-2 transition-all ease-in-out bg-gray-200 rounded hover:bg-gray-300"
               >
                 {value}
               </button>
@@ -224,7 +224,7 @@
           </div>
           <button
             onClick={() => setIsModalOpen(false)}
-            className="mt-4 w-full bg-red-500 text-white p-2 rounded hover:bg-red-700 transition-all ease-in-out"
+            className="w-full p-2 mt-4 text-white transition-all ease-in-out bg-red-500 rounded hover:bg-red-700"
           >
             Cerrar
           </button>
