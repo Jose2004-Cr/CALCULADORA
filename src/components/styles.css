@@ -1,11 +1,10 @@
 /* Modo claro por defecto */
 body {
-    transition: background-color 0.5s, color 0.5s;
-  }
-  
-  /* Modo oscuro */
-  body.dark-mode {
-    background-color: #121212;
-    color: #ffffff;
-  }
-  
+  transition: background-color 0.5s, color 0.5s;
+}
+
+/* Modo oscuro */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}

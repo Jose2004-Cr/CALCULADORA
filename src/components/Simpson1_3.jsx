@@ -77,7 +77,7 @@ const App = () => {
       sum1 += func(a + i * h);
     }
 
-    for (let i = 2; i < n - 1; i += 2) {
+    for (let i = 2; i < n; i += 2) {
       sum2 += func(a + i * h);
     }
 
@@ -85,11 +85,6 @@ const App = () => {
     return integral;
   };
 
-  
-  const handleInputChange = (event) => {
-    setShowGraph(false);
-    return
-  }
   const handleSubmit = (e) => {
     e.preventDefault();
     const aNum = parseFloat(a);
@@ -131,24 +126,27 @@ const App = () => {
   };
 
   return (
-    <div className='animate__animated animate__fadeIn'>
-      <h1 className="text-3xl font-bold text-center">Método de Simpson 1/3</h1>
-      <div className='grid grid-cols-3 p-6'>
-        <div className="w-full max-w-md p-8 pt-5 bg-white">
+    <div className="min-h-screen bg-gray-100 animate__animated animate__fadeIn">
+      <h1 className="mt-10 mb-6 text-4xl font-bold text-center text-blue-900">Método de Simpson 1/3</h1>
+      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-3">
+        <div className="p-8 bg-white rounded-lg shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-900">Ingresa la función:</label>
               <input
                 type="text"
                 value={funcStr}
-                onChange={(e) => setFuncStr(e.target.value) + handleInputChange()}
-                placeholder="Ejemplo: x**2"
-                className="w-full p-2 border border-gray-300 rounded"
+                onChange={(e) => {
+                  setFuncStr(e.target.value);
+                  setShowGraph(false);
+                }}
+                placeholder="Ejemplo: Math.pow(x, 2)"
+                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
               />
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="w-full p-2 mt-2 text-white transition-all ease-in-out bg-blue-800 rounded hover:bg-blue-700"
+                className="w-full p-3 mt-2 text-white transition-all bg-blue-600 rounded hover:bg-blue-700"
               >
                 Funciones Predefinidas
               </button>
@@ -159,7 +157,7 @@ const App = () => {
                 type="text"
                 value={a}
                 onChange={(e) => setA(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
               />
             </div>
             <div>
@@ -168,34 +166,24 @@ const App = () => {
                 type="text"
                 value={b}
                 onChange={(e) => setB(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-[#211d94] text-white p-2 rounded hover:bg-opacity-80 transition-all ease-in-out hover:scale-[103%]"
+              className="w-full p-3 text-white transition-all bg-blue-800 rounded hover:bg-blue-900"
             >
               Calcular Integral
             </button>
           </form>
           {result !== null && (
-            <div className="grid grid-cols-2 gap-10 p-4 mt-4 bg-gray-100 border border-gray-300 rounded">
-              <div className='flex flex-col'>
-                <h2 className="text-lg font-semibold">
-                Resultado:</h2>
-                <p>{result}</p>
-              </div>
-             
-              {error !== null && (
-                <div className="flex flex-col">
-                  <h3 className="text-lg font-semibold">Margen de error:</h3>
-                  <p>{error.toFixed(2)}%</p>
-                </div>
-              )}
+            <div className="p-4 mt-6 bg-gray-100 border border-gray-300 rounded shadow-sm">
+              <h2 className="text-lg font-semibold text-gray-900">Resultado:</h2>
+              <p>{result}</p>
             </div>
           )}
         </div>
-        <div className='flex items-center justify-center col-span-2 p-5'>
+        <div className="flex items-center justify-center p-5 bg-white rounded-lg shadow-lg md:col-span-2">
           {showGraph && (
             <Graph func={new Function('x', `return ${funcStr}`)} a={parseFloat(a)} b={parseFloat(b)} />
           )}
@@ -208,27 +196,29 @@ const App = () => {
         className="modal"
         overlayClassName="modal-overlay"
       >
-        <h2 className="mb-4 text-lg font-semibold">Funciones Predefinidas</h2>
-        <div className="grid grid-cols-1 gap-2">
-          {Object.entries(predefinedFunctions).map(([key, value]) => (
-            <button
-              key={key}
-              onClick={() => {
-                setFuncStr(key);
-                setIsModalOpen(false);
-              }}
-              className="p-2 transition-all ease-in-out bg-gray-200 rounded hover:bg-gray-300"
-            >
-              {value}
-            </button>
-          ))}
+        <div className="p-4">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">Funciones Predefinidas</h2>
+          <div className="grid grid-cols-1 gap-2">
+            {Object.entries(predefinedFunctions).map(([key, value]) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setFuncStr(key);
+                  setIsModalOpen(false);
+                }}
+                className="p-3 transition-all bg-gray-200 rounded hover:bg-gray-300"
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="w-full p-3 mt-4 text-white transition-all bg-red-500 rounded hover:bg-red-700"
+          >
+            Cerrar
+          </button>
         </div>
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="w-full p-2 mt-4 text-white transition-all ease-in-out bg-red-500 rounded hover:bg-red-700"
-        >
-          Cerrar
-        </button>
       </Modal>
     </div>
   );
